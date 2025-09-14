@@ -1,7 +1,8 @@
 import Link from "next/link";
 import css from "./Header.module.css";
-import { fetchTags } from "@/lib/api";
+import { fetchTags } from "@/lib/api/clientApi";
 import TagsMenu from "../TagsMenu/TagsMenu";
+import AuthNavigation from "../AuthNavigation/AuthNavigation";
 
 export default async function Header() {
   const tags = await fetchTags();
@@ -21,6 +22,7 @@ export default async function Header() {
           <li className={css.navigationItem}>
             <TagsMenu tags={tags} />
           </li>
+            <AuthNavigation/>     
         </ul>
       </nav>
     </header>

@@ -1,3 +1,5 @@
+
+
 import { createPortal } from 'react-dom';
 import { useEffect, type ReactNode } from 'react';
 import css from './Modal.module.css'
@@ -45,3 +47,6 @@ const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     document.body
   );
 }
+
+
+
