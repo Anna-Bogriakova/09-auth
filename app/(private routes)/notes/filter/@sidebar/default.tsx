@@ -1,9 +1,9 @@
 
-import { fetchTags } from "@/lib/api/clientApi";
 import SidebarNotes from "./SidebarNotes";
+import { fetchServerTags } from "@/lib/api/serverApi";
 
 export default async function DefaultSidebar() {
-  const tags = await fetchTags(); 
+  const tags = await fetchServerTags(); 
 
   return <SidebarNotes tags={tags} />;
 }

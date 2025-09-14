@@ -3,20 +3,34 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import css from "./SignUpPage.module.css"
 import { register } from "@/lib/api/clientApi";
+import { ApiError } from "@/app/api/api";
+import { useAuthStore } from "@/lib/store/authStore";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const setUser = useAuthStore((state) => state.setUser)
 
   const handleSubmit = async (e: React.FormEvent) => {
+    
+    
     e.preventDefault();
     try {
-      await register({ email, password });
-      router.push("/profile");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
+      const res = await register({ email, password });
+            if (res) {
+        setUser(res)
+        router.push('/profile');
+      } else {
+        setError('Invalid email or password');
+      }
+    } catch (error) {
+      setError(
+        (error as ApiError).response?.data?.error ??
+          (error as ApiError).message ??
+          'Oops... some error'
+      )
     }
   };
 

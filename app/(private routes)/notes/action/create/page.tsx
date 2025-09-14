@@ -26,5 +26,6 @@ export default function CreateNote() {
         <NoteForm />
       </div>
     </main>
+    
   );
 }
