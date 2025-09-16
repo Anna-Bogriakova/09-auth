@@ -1,6 +1,10 @@
+export type RegisterRequest = {
+  email: string;
+  password: string;
+};
+
 export interface User {
-  _id: string;
   email: string;
   username: string;
-  avatar?: string;
+  avatar: string;
 }
