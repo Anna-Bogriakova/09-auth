@@ -1,44 +1,50 @@
-'use client';
+"use client";
 import { createNote } from "@/lib/api/clientApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import css from "./NoteForm.module.css";
 import { useNoteStore } from "@/lib/store/noteStore";
 import { useRouter } from "next/navigation";
-
-
+import { NoteTag } from "@/types/note"; // ✅ імпорт типу NoteTag
 
 export default function NoteForm() {
   const { draft, setDraft, clearDraft } = useNoteStore();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { mutate } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
       clearDraft();
-       queryClient.invalidateQueries({ queryKey: ["notes"] });
- router.back();
-    
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      router.back();
     },
   });
-const router = useRouter();
-   const handleCancel = () => {
-    router.back(); 
+
+  const handleCancel = () => {
+    router.back();
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setDraft({
-      ...draft, 
-      [name]: value, 
+      ...draft,
+      [name]: value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate(draft);
+    // ✅ приводимо tag до типу NoteTag
+    const note = {
+      ...draft,
+      tag: draft.tag as NoteTag,
+    };
+    mutate(note);
   };
 
   return (
@@ -72,7 +78,13 @@ const router = useRouter();
 
       <div className={css.formGroup}>
         <label htmlFor="tag">Tag</label>
-        <select id="tag" name="tag" className={css.select} value={draft.tag} onChange={handleChange}>
+        <select
+          id="tag"
+          name="tag"
+          className={css.select}
+          value={draft.tag}
+          onChange={handleChange}
+        >
           <option value="Todo">Todo</option>
           <option value="Work">Work</option>
           <option value="Personal">Personal</option>
@@ -82,10 +94,14 @@ const router = useRouter();
       </div>
 
       <div className={css.actions}>
-        <button type="button" className={css.cancelButton} onClick={handleCancel} >
+        <button
+          type="button"
+          className={css.cancelButton}
+          onClick={handleCancel}
+        >
           Cancel
         </button>
-        <button type="submit" className={css.submitButton} >
+        <button type="submit" className={css.submitButton}>
           Create note
         </button>
       </div>
