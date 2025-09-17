@@ -19,7 +19,7 @@ const Header = () => {
             <Link href="/">Home</Link>
           </li>
 
-          <AuthNavigation user={user} />
+          <AuthNavigation />
         </ul>
       </nav>
     </header>

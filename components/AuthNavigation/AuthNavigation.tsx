@@ -2,32 +2,29 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ReactNode } from "react";
+import { useAuthStore } from "@/lib/store/authStore";
+import { logout } from "@/lib/api/clientApi";
 import css from "./AuthNavigation.module.css";
+import TagsMenu from "../TagsMenu/TagsMenu";
 
-interface User {
-  email: string;
-}
-
-interface AuthNavigationProps {
-  user: User | null;
-}
-
-// ✅ тут замість JSX.Element пишемо ReactNode
-export default function AuthNavigation({
-  user,
-}: AuthNavigationProps): ReactNode {
+const AuthNavigation = () => {
   const router = useRouter();
 
+  const { isAuthenticated, user, clearAuth } = useAuthStore();
+
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await logout();
+    clearAuth(); // 👈 правильний метод зі стора
     router.push("/sign-in");
   };
 
   return (
     <>
-      {user ? (
+      {isAuthenticated ? (
         <>
+          <li>
+            <TagsMenu />
+          </li>
           <li className={css.navigationItem}>
             <Link
               href="/profile"
@@ -37,10 +34,9 @@ export default function AuthNavigation({
               Profile
             </Link>
           </li>
-
           <li className={css.navigationItem}>
-            <p className={css.userEmail}>{user.email}</p>
-            <button className={css.logoutButton} onClick={handleLogout}>
+            <p className={css.userEmail}>{user?.email}</p>
+            <button onClick={handleLogout} className={css.logoutButton}>
               Logout
             </button>
           </li>
@@ -56,7 +52,6 @@ export default function AuthNavigation({
               Login
             </Link>
           </li>
-
           <li className={css.navigationItem}>
             <Link
               href="/sign-up"
@@ -70,4 +65,5 @@ export default function AuthNavigation({
       )}
     </>
   );
-}
+};
+export default AuthNavigation;

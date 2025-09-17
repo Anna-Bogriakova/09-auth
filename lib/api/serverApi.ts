@@ -6,10 +6,10 @@ import { Note, NoteTag } from "@/types/note";
 // ✅ Перевірка сесії на сервері
 export const checkServerSession = async () => {
   const cookieStore = await cookies();
-  const { data } = await nextServer.get("/auth/session", {
+  const response = await nextServer.get("/auth/session", {
     headers: { Cookie: cookieStore.toString() },
   });
-  return data;
+  return response; // тепер повертається весь AxiosResponse
 };
 
 // ✅ Отримання поточного користувача
