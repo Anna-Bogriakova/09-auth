@@ -1,17 +1,23 @@
-import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import {
+  QueryClient,
+  HydrationBoundary,
+  dehydrate,
+} from "@tanstack/react-query";
 import NoteDetailsClient from "./NoteDetails.client";
 
 import { Metadata } from "next";
-import { fetchNoteById } from "@/lib/api/clientApi";
+import { fetchNoteById } from "@/lib/api/serverApi";
 
 type Props = { params: Promise<{ id: string }> };
 
-
-export async function generateMetadata(
-  { params }: { params: Promise<{ id: string }> }
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const { id } = await params;
-  const note = await fetchNoteById(id);
+
+  const note = await fetchNoteById(id).catch(() => null);
 
   if (!note) {
     return {
@@ -21,9 +27,7 @@ export async function generateMetadata(
         title: "Note not found | NoteHub",
         description: "The requested note does not exist.",
         url: `/notes/${id}`,
-        images: [
-          "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
-        ],
+        images: ["https://ac.goit.global/fullstack/react/notehub-og-meta.jpg"],
       },
     };
   }
@@ -35,12 +39,11 @@ export async function generateMetadata(
       title: `${note.title} | NoteHub`,
       description: note.content.slice(0, 150),
       url: `/notes/${id}`,
-      images: [
-        "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
-      ],
+      images: ["https://ac.goit.global/fullstack/react/notehub-og-meta.jpg"],
     },
   };
 }
+
 export default async function NoteDetails({ params }: Props) {
   const { id } = await params;
 
@@ -51,10 +54,8 @@ export default async function NoteDetails({ params }: Props) {
     queryFn: () => fetchNoteById(id),
   });
 
-  const dehydratedState = dehydrate(queryClient);
-
   return (
-    <HydrationBoundary state={dehydratedState}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <NoteDetailsClient />
     </HydrationBoundary>
   );
