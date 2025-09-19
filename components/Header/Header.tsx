@@ -3,7 +3,7 @@
 import AuthNavigation from "../AuthNavigation/AuthNavigation";
 import css from "./Header.module.css";
 import Link from "next/link";
-import { useAuthStore } from "@/lib/store/authStore"; // ваш глобальний стан
+import { useAuthStore } from "@/lib/store/authStore";
 
 const Header = () => {
   const user = useAuthStore((state) => state.user);

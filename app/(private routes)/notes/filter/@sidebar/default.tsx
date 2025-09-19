@@ -1,9 +1,21 @@
+import Link from "next/link";
+import css from "./SidebarNotes.module.css";
 
-import SidebarNotes from "./SidebarNotes";
-import { fetchServerTags } from "@/lib/api/serverApi";
+const TAGS = ["All", "Work", "Personal", "Meeting", "Shopping", "Todo"];
 
-export default async function DefaultSidebar() {
-  const tags = await fetchServerTags(); 
-
-  return <SidebarNotes tags={tags} />;
+export default function SidebarPage() {
+  return (
+    <ul className={css.menuList}>
+      {TAGS.map((tag) => {
+        const href = `/notes/filter/${tag}`;
+        return (
+          <li key={tag} className={css.menuItem}>
+            <Link href={href} className={css.menuLink}>
+              {tag}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
 }

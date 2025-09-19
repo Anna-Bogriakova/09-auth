@@ -1,19 +1,16 @@
-// TagsMenu.tsx
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import css from "./TagsMenu.module.css";
 import { useState } from "react";
 
-interface TagsMenuProps {
-  tags?: string[];
-}
-
-export default function TagsMenu({ tags = [] }: TagsMenuProps) {
+export default function TagsMenu() {
   const pathname = usePathname();
   const currentTag = pathname?.split("/")[3] || "All";
 
   const [open, setOpen] = useState(false);
+
+  const tags: string[] = ["Work", "Personal", "Meeting", "Shopping", "Todo"];
 
   return (
     <div className={css.menuContainer}>
@@ -21,10 +18,25 @@ export default function TagsMenu({ tags = [] }: TagsMenuProps) {
         className={css.menuButton}
         onClick={() => setOpen((prev) => !prev)}
       >
-        {currentTag === "" ? "Notes ▾" : `${currentTag} ▾`}
+        {currentTag === "All" ? "Notes ▾" : `${currentTag} ▾`}
       </button>
-      {open && tags.length > 0 && (
+
+      {open && (
         <ul className={css.menuList}>
+          <li
+            className={`${css.menuItem} ${
+              currentTag === "All" ? css.menuItemActive : ""
+            }`}
+          >
+            <Link
+              href="/notes"
+              className={css.menuLink}
+              onClick={() => setOpen(false)}
+            >
+              All
+            </Link>
+          </li>
+
           {tags.map((tag) => (
             <li
               key={tag}
